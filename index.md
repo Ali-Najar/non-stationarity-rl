@@ -14,18 +14,15 @@ title: ""
   document.addEventListener('DOMContentLoaded', () => {
     const start = (document.querySelector('main.snap')?.dataset.start || 'top').toLowerCase();
     requestAnimationFrame(() => {
-      window.scrollTo({
-        top: start === 'bottom' ? document.documentElement.scrollHeight : 0,
-        left: 0, behavior: 'auto'
-      });
+      window.scrollTo({ top: start === 'bottom' ? document.documentElement.scrollHeight : 0, left: 0, behavior: 'auto' });
     });
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
 
-<main class="snap" data-start="top"><!-- change to 'bottom' to load at page end -->
+<main class="snap" data-start="top">
 
-  <!-- Screen 1: Title (hero-only neural background) -->
+  <!-- Screen 1: Title (taller hero, neural bg) -->
   <header class="hero reveal snap-section" data-loop>
     <canvas id="nn-hero" class="hero-canvas" aria-hidden="true"></canvas>
     <div class="hero-content">
@@ -45,16 +42,54 @@ title: ""
     </div>
   </section>
 
-  <!-- Screen 3: Poster (simple one-line <object> embed) -->
+  <!-- Screen 3: Poster -->
   <section id="poster" class="snap-section">
     <div class="container">
       <h2 class="section-title reveal">Check out our poster</h2>
 
       <div class="poster-frame">
+
+        <!-- ===== Option A: Simple <object> (may show browser toolbar) ===== -->
         <object
           class="poster-embed"
           data="{{ '/assets/img/PosterSession.pdf' | relative_url }}#view=FitH&toolbar=0&navpanes=0&scrollbar=0"
           type="application/pdf"></object>
+
+        <!-- ===== Option B: PDF.js canvas (NO toolbar). Uncomment to use. =====
+        <canvas id="poster-canvas" class="poster-canvas"></canvas>
+        <script defer src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            const url = "{{ '/assets/img/PosterSession.pdf' | relative_url }}";
+            // worker
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+            const canvas = document.getElementById('poster-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const frame = document.querySelector('.poster-frame');
+
+            function render() {
+              pdfjsLib.getDocument(url).promise.then(pdf => pdf.getPage(1)).then(page => {
+                const w = frame.clientWidth;
+                const vp1 = page.getViewport({ scale: 1 });
+                const scale = Math.min(w / vp1.width, 2.0); // limit scale for perf
+                const vp = page.getViewport({ scale });
+                canvas.width = Math.floor(vp.width);
+                canvas.height = Math.floor(vp.height);
+                canvas.style.width = vp.width + 'px';
+                canvas.style.height = vp.height + 'px';
+                return page.render({ canvasContext: ctx, viewport: vp }).promise;
+              }).catch(console.error);
+            }
+
+            // Re-render on resize (throttled)
+            let tid;
+            window.addEventListener('resize', () => { clearTimeout(tid); tid = setTimeout(render, 120); });
+            render();
+          });
+        </script>
+        ===== End Option B ===== -->
+
       </div>
     </div>
   </section>

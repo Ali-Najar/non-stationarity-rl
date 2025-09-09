@@ -55,7 +55,7 @@
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // connections
+    // edges
     for (let i = 0; i < nodes.length; i++) {
       const a = nodes[i];
       for (let j = i + 1; j < nodes.length; j++) {
@@ -76,7 +76,7 @@
       }
     }
 
-    // nodes + subtle glow
+    // nodes + glow
     for (const n of nodes) {
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
@@ -104,11 +104,9 @@
   function start(){ if (!raf) raf = requestAnimationFrame(loop); }
   function stop(){ if (raf){ cancelAnimationFrame(raf); raf = null; } }
 
-  // Resize with container, not window
   const ro = new ResizeObserver(resize);
   ro.observe(container);
 
-  // Sleep when hero is offscreen (smoother scroll)
   const vis = new IntersectionObserver(([e]) => {
     if (e.isIntersecting) start(); else stop();
   }, { threshold: 0.1 });

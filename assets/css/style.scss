@@ -38,8 +38,7 @@ $shadow: 0 10px 30px rgba(2,6,23,.5);
 
 html {
   scroll-behavior: smooth;
-  /* Firefox scrollbar */
-  scrollbar-width: thin;
+  scrollbar-width: thin; /* Firefox */
   scrollbar-color: rgba(148,163,184,.35) transparent;
 }
 
@@ -111,7 +110,7 @@ a {
   position: relative;       /* needed for hero-only canvas */
   overflow: hidden;         /* clip the canvas */
   text-align: center;
-  padding: 4rem 1rem;
+  padding: 4rem 1rem 10svh; /* extra bottom pad for nicer fade into creators */
   background:
     radial-gradient(1200px 400px at 50% -10%, rgba(59,130,246,.15), transparent 60%),
     radial-gradient(800px 300px at 80% 0%, rgba(6,182,212,.12), transparent 60%),
@@ -120,28 +119,19 @@ a {
   border-radius: 1rem;
   margin: 2rem 0;
   box-shadow: var(--shadow);
-
-  &-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    opacity: .45;          /* lighter for perf */
-    filter: none;          /* avoid extra compositing */
-  }
-
-  &-content { position: relative; z-index: 1; }
-
-  .hero-logo {
-    width: 128px; height: 128px;
-    object-fit: contain;
-    margin-bottom: 1rem;
-    filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
-  }
-
-  .subtitle { opacity: .85; margin-bottom: 1.25rem; color: var(--text-1); }
+  min-height: 115svh;       /* << taller hero so the background carries into next section */
 }
+
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .45;             /* lighter for perf */
+  filter: none;             /* avoid extra compositing */
+}
+.hero-content { position: relative; z-index: 1; }
 
 /* Buttons */
 .btn {
@@ -153,9 +143,7 @@ a {
 }
 
 /* Creators (bigger) */
-.creators {
-  display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.25rem;
-}
+.creators { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1.25rem; }
 .avatar {
   width: clamp(96px, 12vw, 148px);
   height: clamp(96px, 12vw, 148px);
@@ -166,11 +154,19 @@ a {
   &:hover { box-shadow: 0 10px 28px rgba(0,0,0,.4), 0 0 0 6px var(--ring); }
 }
 .creator-names {
-  text-align: center; margin-top: .6rem; opacity: .95; font-weight: 800;
+  text-align: center; margin-top: .8rem; opacity: .95; font-weight: 800;
   letter-spacing: .2px;
-  /* FIX: Ruby Sass-safe mixed units */
-  font-size: clamp(1.1rem, unquote("calc(.9rem + 1.2vw)"), 1.7rem);
+  font-size: clamp(1.1rem, unquote("calc(.9rem + 1.2vw)"), 1.7rem); /* Ruby Sass-safe */
 }
+
+/* Content text margins (“prose”) */
+.prose {
+  max-width: 800px; width: 100%;
+  margin-inline: auto;
+  padding-inline: 1.25rem;  /* << more side margin */
+}
+.prose > * + * { margin-top: 1rem; }
+.prose h3 { margin-top: 1.5rem; }
 
 /* Post hero */
 .post-hero {
@@ -188,20 +184,14 @@ a {
 
 /* Figures */
 .figure, figure { margin: 1.25rem 0; text-align: center; }
-.figure img, figure img {
-  border-radius: .5rem; box-shadow: 0 10px 24px rgba(0,0,0,.28);
-}
+.figure img, figure img { border-radius: .5rem; box-shadow: 0 10px 24px rgba(0,0,0,.28); }
 .caption { font-size: .9rem; color: #9aa4b2; margin-top: .5rem; }
 
 /* Two-column gallery */
 .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
 
 /* Notes */
-.note {
-  background: rgba(14,165,233,.12);
-  border-left: 4px solid var(--accent-2);
-  padding: .75rem 1rem; border-radius: .5rem;
-}
+.note { background: rgba(14,165,233,.12); border-left: 4px solid var(--accent-2); padding: .75rem 1rem; border-radius: .5rem; }
 
 /* Tables */
 table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
@@ -219,66 +209,51 @@ th { text-align: left; background: rgba(30,41,59,.6); color: #fff; }
   will-change: opacity, transform;
   contain: paint;                                  /* smoother during scroll */
 }
-.reveal.revealed {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
+.reveal.revealed { opacity: 1; transform: translate3d(0, 0, 0); }
 
 /* Typography scale (Ruby Sass-safe clamp) */
-.title-xl {
-  /* clamp(2.2rem, 4vw + 1rem, 4.2rem) => wrap in calc + unquote */
-  font-size: clamp(2.2rem, unquote("calc(1rem + 4vw)"), 4.2rem);
-}
-.section-title {
-  /* clamp(1.4rem, 1.6vw + .8rem, 2rem) => wrap */
-  font-size: clamp(1.4rem, unquote("calc(.8rem + 1.6vw)"), 2rem);
-}
+.title-xl { font-size: clamp(2.2rem, unquote("calc(1rem + 4vw)"), 4.2rem); }
+.section-title { font-size: clamp(1.4rem, unquote("calc(.8rem + 1.6vw)"), 2rem); }
 
-/* ---------- Snap layout & comfy text margins ---------- */
-section, header.hero { margin: 0; }                /* reset for snap layout */
+/* ---------- Snap layout & comfy section spacing ---------- */
+section, header.hero { margin: 0; }
 section, header.hero, main, .container, .prose { width: 100%; }
 
-/* Comfy margins + width caps */
 .container { max-width: 920px; margin-inline: auto; padding-inline: 1rem; }
-.prose    { max-width: 800px; margin-inline: auto; padding-inline: .5rem; }
-
-/* Gentle scroll-snap on desktop; mandatory on touch */
-.snap { scroll-snap-type: y proximity; }
+.snap { scroll-snap-type: y proximity; } /* gentler on desktop */
 @media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
   .snap { scroll-snap-type: y mandatory; }
 }
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  min-height: 100vh;   /* fallback */
-  min-height: 100svh;  /* better on mobile */
+  min-height: 100vh;
+  min-height: 100svh;
   display: grid;
   place-items: center;
-  padding-block: 3rem; /* breathing room */
+  padding-block: 3.5rem; /* a touch more breathing room */
 }
 
-/* Make the hero truly full-screen, with ONLY the title centered */
-.hero { min-height: 100vh; min-height: 100svh; margin: 0; }
+/* Make the hero truly full-screen (now a bit taller) */
+.hero { /* min-height above */ }
 .hero .subtitle { display: none !important; }
 
-/* Poster frame: inline viewer on a white surface (fixes black-box look) */
+/* Poster frame: slightly smaller height */
 .poster-frame {
   width: 100%;
-  height: min(82vh, 920px);
+  height: min(70vh, 820px);  /* << smaller than before */
   border: 1px solid var(--card-border);
   border-radius: 14px;
   overflow: hidden;
   box-shadow: var(--shadow);
-  background: #fff; /* critical for PDF contrast */
+  background: #fff;
 }
-.poster-embed {
-  width: 100%;
-  height: 100%;
-  background: #fff; /* keep inside white as well */
-  border: 0;
-}
+.poster-embed { width: 100%; height: 100%; background: #fff; border: 0; }
 
-/* Respect reduced motion preference */
+/* Canvas style if using PDF.js render (no viewer chrome) */
+.poster-canvas { width: 100%; height: auto; display: block; }
+
+/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
   .reveal, .reveal.revealed { transform: none !important; }
@@ -299,15 +274,8 @@ section, header.hero, main, .container, .prose { width: 100%; }
 
 /* -------- Extra clamps to kill horizontal overflow -------- */
 html, body { max-width: 100%; overflow-x: hidden; }
-main.snap { overflow-x: clip; }                     /* stricter than hidden */
-
-.hero, .container, .prose, .poster-frame, .poster-embed {
-  max-width: 100%;
-}
-
-object.poster-embed, iframe.poster-embed {
-  display: block; width: 100%; max-width: 100%; overflow: hidden;
-}
-
-/* Catch rogue 100vw usage (causes tiny overflow due to scrollbar width) */
+main.snap { overflow-x: clip; } /* stricter than hidden */
+.hero, .container, .prose, .poster-frame, .poster-embed { max-width: 100%; }
+object.poster-embed, iframe.poster-embed { display: block; width: 100%; max-width: 100%; overflow: hidden; }
+/* Catch rogue 100vw usage */
 *[style*="100vw"] { width: 100% !important; }
