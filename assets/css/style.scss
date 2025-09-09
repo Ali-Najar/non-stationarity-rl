@@ -45,7 +45,13 @@ html {
   scroll-behavior: smooth;
   scrollbar-width: thin; /* Firefox (can be overridden/hid below) */
   scrollbar-color: rgba(148,163,184,.35) transparent;
+  /* match body so overscroll never reveals white */
+  background: linear-gradient(180deg, var(--bg-0), var(--bg-1)) fixed !important;
+  background-color: var(--bg-0) !important;
+  overscroll-behavior-y: none;
 }
+
+html, body { margin: 0 !important; min-height: 100%; }
 
 body {
   overflow-x: hidden;
@@ -159,13 +165,15 @@ section, header.hero, main, .container, .prose{ width:100%; }
   position:absolute; left:-1px; right:-1px; bottom:-1px;
   height: 22svh;                      /* shorter fade → ends sooner */
   z-index:0; pointer-events:none;
-  // background: linear-gradient(
-  //   to bottom,
-  //   rgba(10,15,31,0) 0%,
-  //   rgba(10,15,31,.28) 36%,
-  //   rgba(10,15,31,.60) 72%,
-  //   var(--bg-1) 100%
-  // );
+  /* If you want a surface fade again, uncomment and tweak colors:
+  background: linear-gradient(
+    to bottom,
+    rgba(10,15,31,0) 0%,
+    rgba(10,15,31,.28) 36%,
+    rgba(10,15,31,.60) 72%,
+    var(--bg-1) 100%
+  );
+  */
   transform: translateZ(0);
 }
 
@@ -176,14 +184,13 @@ section, header.hero, main, .container, .prose{ width:100%; }
   z-index:1; pointer-events:none;
   opacity:.45; filter:none;
   -webkit-mask-image: linear-gradient(to bottom,
-      rgba(0,0,0,1) 38%,               /* was ~55% → now earlier */
+      rgba(0,0,0,1) 38%,
       rgba(0,0,0,0) 100%);
           mask-image: linear-gradient(to bottom,
       rgba(0,0,0,1) 38%,
       rgba(0,0,0,0) 100%);
   transform: translateZ(0);
 }
-
 .hero-content{ position:relative; z-index:2; }
 
 /* Buttons */
@@ -269,7 +276,7 @@ th,td{ padding:.6rem .5rem; border-bottom:1px solid rgba(148,163,184,.2); }
 th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
 
 /* Footer text */
-.site-footer-owner, .site-footer-credits{ color:var(--text-1); }
+.site-footer-owner, .site-footer-credits{ color: var(--text-1); }
 
 /* ---------- Reveal fade (smooth, replayable) ---------- */
 .reveal{
@@ -285,25 +292,73 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
 .title-xl      { font-size: clamp(2.2rem, var(--title-fluid),   4.2rem); }
 .section-title { font-size: clamp(1.4rem, var(--section-fluid),  2rem); }
 
-/* Poster frame */
-.poster-frame{
-  width:100%;
-  height:min(60vh, 700px) !important;
-  border:1px solid var(--card-border);
-  border-radius:14px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  background:#fff;
+/* ---------- Poster clickable preview + circular loader ---------- */
+.poster-click{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .6rem;
 }
 
-/* Canvas render (PDF.js) */
-.poster-canvas{ width:100%; height:auto; display:block; }
+.poster-img{
+  max-width: min(1100px, 60vw);
+  width: 30%;
+  display:block;
+  margin:0 auto;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: #fff;    /* prevents "invisible" look on dark bg while loading */
+  box-shadow: var(--shadow);
+  opacity: 0;          /* fade in when ready */
+  transition: opacity .28s ease-out;
+}
+.poster-img.is-ready{ opacity: 1; }
 
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-  *{ transition:none !important; }
-  .reveal, .reveal.revealed{ transform:none !important; }
-  .snap{ scroll-snap-type:none; }
+.poster-hint{
+  font-size: .92rem;
+  opacity: .85;
+}
+
+/* Loader overlay */
+.poster-loader{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: .65rem;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity .22s ease;
+  z-index: 2;
+}
+.poster-loader.is-done{
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* Circular spinner */
+.spinner{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid rgba(148,163,184,.25);
+  border-top-color: rgba(148,163,184,.9);
+  animation: spin .9s linear infinite;
+}
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+
+.loader-text{
+  font-size: .95rem;
+  color: var(--text-1);
+  letter-spacing: .2px;
 }
 
 /* ---------- Cross-browser scrollbar styling (hidden) ---------- */
@@ -315,24 +370,6 @@ body::-webkit-scrollbar-track { background: transparent !important; }
 
 /* -------- Extra clamps to kill horizontal overflow -------- */
 html, body{ max-width:100%; overflow-x: clip; }
-.hero, .container, .prose, .poster-frame{ max-width:100%; }
+.hero, .container, .prose{ max-width:100%; }
 /* Catch rogue 100vw usage */
 *[style*="100vw"]{ width:100% !important; }
-
-/* Vector viewer box: taller so an A0 poster fits without internal scroll */
-.poster-frame{
-  height: min(85vh, 1100px) !important;  /* was min(60vh, 700px) */
-  background: transparent;               /* no white halo around edges */
-  border: 0;                              /* optional: remove frame border */
-  box-shadow: none;                       /* optional: avoids any “box” vibe */
-}
-
-.poster-object{
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* If you previously tried PDF.js canvas, make sure nothing targets it */
-.poster-canvas{ display: none !important; }
