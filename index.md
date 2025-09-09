@@ -3,14 +3,17 @@ layout: default
 title: ""
 ---
 
+<!-- Styles (cache-busted) -->
 <link rel="stylesheet"
       href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
+
+<!-- Scripts -->
 <script src="{{ '/assets/js/reveal.js' | relative_url }}" defer></script>
 <script src="{{ '/assets/js/nn-bg.js' | relative_url }}" defer></script>
 <script>
   // MathJax inline config
   window.MathJax = { tex: { inlineMath: [["$","$"],["\\(","\\)"]] } };
-  // Always start at chosen edge (top|bottom via data-start)
+  // Always start at the top (or bottom if you change data-start)
   history.scrollRestoration = 'manual';
   document.addEventListener('DOMContentLoaded', () => {
     const start = (document.querySelector('main.snap')?.dataset.start || 'top').toLowerCase();
@@ -23,7 +26,7 @@ title: ""
 
 <main class="snap" data-start="top">
 
-  <!-- Screen 1: Title (taller hero, neural bg) -->
+  <!-- Screen 1: Title (hero with neural background) -->
   <header class="hero reveal snap-section" data-loop>
     <canvas id="nn-hero" class="hero-canvas" aria-hidden="true"></canvas>
     <div class="hero-content">
@@ -43,29 +46,31 @@ title: ""
     </div>
   </section>
 
-  <!-- Screen 3: Poster (rendered to canvas via PDF.js — no viewer chrome) -->
+  <!-- Screen 3: Poster (PNG preview that downloads the PDF) -->
   <section id="poster" class="reveal snap-section">
-  <div class="container">
-    <h2 class="section-title">Check out our poster</h2>
+    <div class="container">
+      <h2 class="section-title">Check out our poster</h2>
 
-    <div class="poster-frame">
-      <object
-        class="poster-object"
-        data="{{ '/assets/img/PosterSession.pdf#page=1&zoom=page-fit&view=Fit&toolbar=0&navpanes=0&scrollbar=0' | relative_url }}"
-        type="application/pdf">
-        <!-- Fallbacks if the browser can’t embed PDFs -->
-        <embed class="poster-object"
-               src="{{ '/assets/img/PosterSession.pdf#zoom=page-fit' | relative_url }}"
-               type="application/pdf" />
-        <p class="note" style="margin-top:.75rem">
-          Your browser can’t show the PDF inline.
-          <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}">Open the poster</a>.
+      <!-- Click the image to download the original PDF -->
+      <a class="poster-click"
+         href="{{ '/assets/img/PosterSession.pdf' | relative_url }}"
+         download>
+        <img class="poster-img"
+             alt="Non-Stationarity in RL — poster preview"
+             loading="lazy" decoding="async"
+             src="{{ '/assets/img/poster-1600.png' | relative_url }}"
+             srcset="{{ '/assets/img/poster-1600.png' | relative_url }} 1x,
+                     {{ '/assets/img/poster-2400.png' | relative_url }} 2x">
+        <span class="poster-hint">Click to download PDF</span>
+      </a>
+
+      <noscript>
+        <p class="note" style="margin-top:1rem">
+          JavaScript is disabled. <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}" download>Download the PDF</a>.
         </p>
-      </object>
+      </noscript>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- Screen 4: Content -->
   <section id="content" class="snap-section">
