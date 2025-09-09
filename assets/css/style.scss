@@ -173,9 +173,9 @@ a {
 
 /* Content text margins (“prose”) */
 .prose {
-  max-width: 800px; width: 100%;
+  max-width: 640px; width: 100%;
   margin-inline: auto;
-  padding-inline: 1.25rem;  /* << more side margin */
+  padding-inline: 1.75rem;  /* << more side margin */
 }
 .prose > * + * { margin-top: 1rem; }
 .prose h3 { margin-top: 1.5rem; }
