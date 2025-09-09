@@ -6,7 +6,8 @@ tags: [reinforcement-learning, non-stationarity, mdp, dynamic-regret]
 ---
 
 
-<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/custom.css">
+<link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
+<script src="{{ site.baseurl }}/assets/js/reveal.js" defer></script>
 
 
 <!-- MathJax for equations -->
@@ -70,8 +71,10 @@ RATS treats nature as an adversary over Lipschitz‑consistent evolutions of $(P
 
 
 <div class="figure">
-<img src="{{ site.baseurl }}/assets/img/rat-diagram.png" alt="RATS minimax search diagram" />
-<p class="caption">RATS minimax planner (illustrative). Replace with your RAT.pdf rendering.</p>
+<object data="{{ site.baseurl }}/assets/img/RAT.svg" type="application/pdf" width="100%" height="400px">
+  <p>RATS minimax planner diagram. <a href="{{ site.baseurl }}/assets/img/RAT.svg">View PDF</a></p>
+</object>
+<p class="caption">RATS minimax planner (illustrative).</p>
 </div>
 
 

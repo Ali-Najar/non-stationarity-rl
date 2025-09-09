@@ -1,13 +1,20 @@
-title: "Non‑Stationarity in RL"
+title: "Non-Stationarity in RL"
 description: "Poster companion: adapting RL to evolving environments."
 url: "https://<your-username>.github.io"
-baseurl: "/<your-repo-name>" # project site: repo name prefixed with /
+baseurl: "/non-stationarity-rl" # repo name for GitHub Pages project site
 
 
 # Theme
 remote_theme: pages-themes/cayman@v0.2.0
 plugins:
 - jekyll-remote-theme
+- jekyll-seo-tag
+
+# Sass config: reduce noise from theme deprecations
+sass:
+  quiet_deps: true
+  style: compressed
+  sourcemap: never
 
 
 # Socials (optional)
@@ -25,16 +32,18 @@ math_engine: mathjax
 
 # Collections (future-proofing if you add more posts/pages)
 collections:
-posts:
-output: true
+  posts:
+    output: true
+    permalink: /:title/
 
 
 # Defaults (adds custom CSS + MathJax to all pages)
 defaults:
-- scope:
-path: ""
-values:
-layout: default
-# Include custom CSS in the head via theme hook
+  - scope:
+      path: ""
+    values:
+      layout: default
+# Include assets explicitly (optional)
 include:
-- assets/css/custom.css
+  - assets/css/style.css
+  - assets/js/reveal.js
