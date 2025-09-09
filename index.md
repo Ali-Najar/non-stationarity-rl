@@ -3,7 +3,7 @@ layout: default
 title: ""
 ---
 
-<!-- Styles (cache-busted) -->
+<!-- Styles (cache-busted so GH Pages refreshes) -->
 <link rel="stylesheet"
       href="{{ '/assets/css/style.css' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
 
@@ -13,7 +13,7 @@ title: ""
 <script>
   // MathJax inline config
   window.MathJax = { tex: { inlineMath: [["$","$"],["\\(","\\)"]] } };
-  // Always start at the top (or bottom if you change data-start)
+  // Always start at the top (change data-start="bottom" to start at end)
   history.scrollRestoration = 'manual';
   document.addEventListener('DOMContentLoaded', () => {
     const start = (document.querySelector('main.snap')?.dataset.start || 'top').toLowerCase();
@@ -51,24 +51,20 @@ title: ""
     <div class="container">
       <h2 class="section-title">Check out our poster</h2>
 
-      <!-- Click the image to download the original PDF -->
+      <!-- Click image to download original PDF -->
       <a class="poster-click"
          href="{{ '/assets/img/PosterSession.pdf' | relative_url }}"
-         download>
-        <img class="poster-img"
-             alt="Non-Stationarity in RL — poster preview"
-             loading="lazy" decoding="async"
-             src="{{ '/assets/img/poster-1600.png' | relative_url }}"
-             srcset="{{ '/assets/img/poster-1600.png' | relative_url }} 1x,
-                     {{ '/assets/img/poster-2400.png' | relative_url }} 2x">
-        <span class="poster-hint">Click to download PDF</span>
+         download
+         style="display:block; text-align:center;">
+        <img
+          class="poster-img"
+          alt="Non-Stationarity in RL — poster preview"
+          loading="lazy"
+          decoding="async"
+          src="{{ '/assets/img/PosterSession.png' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"
+          style="max-width:100%; height:auto; border-radius:14px; border:1px solid var(--card-border); background:#fff; box-shadow:var(--shadow);">
+        <span class="poster-hint" style="display:block; margin-top:.6rem; opacity:.85;">Click to download PDF</span>
       </a>
-
-      <noscript>
-        <p class="note" style="margin-top:1rem">
-          JavaScript is disabled. <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}" download>Download the PDF</a>.
-        </p>
-      </noscript>
     </div>
   </section>
 
