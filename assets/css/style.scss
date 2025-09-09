@@ -321,16 +321,20 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
   opacity: .85;
 }
 
-/* Loader overlay — same width/centering as .poster-img, no changes to .poster-img */
+/* Ensure the wrapper is the positioning context */
+.poster-block { position: relative; }
+
+/* Loader overlay — same box as the poster image */
 .poster-loader{
   position: absolute;
+  top: 0;                         /* align to top of image area */
   left: 50%;
   transform: translateX(-50%);
-  width: 30%;
-  max-width: min(1100px, 60vw);
-
-  /* approximate height while the image is decoding; disappears once image shows */
-  aspect-ratio: 0.707; /* A-series portrait ratio; tweak if your poster is landscape */
+  /* match your <img style="max-width:60%;"> */
+  max-width: 60%;
+  width: 100%;                    /* width is maxed by max-width above */
+  /* reserve height so it’s visible before the PNG decodes */
+  aspect-ratio: 0.707;            /* A-series portrait (width / height). Use 1.414 for landscape. */
 
   display: grid;
   place-items: center;
@@ -346,6 +350,7 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
   transition: opacity .22s ease;
   z-index: 2;
 }
+
 .poster-loader.is-done{
   opacity: 0;
   pointer-events: none;
