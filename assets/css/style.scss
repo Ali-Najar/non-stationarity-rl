@@ -167,7 +167,9 @@ a {
 }
 .creator-names {
   text-align: center; margin-top: .6rem; opacity: .95; font-weight: 800;
-  letter-spacing: .2px; font-size: clamp(1.1rem, 1.2vw + .9rem, 1.7rem);
+  letter-spacing: .2px;
+  /* FIX: Ruby Sass-safe mixed units */
+  font-size: clamp(1.1rem, unquote("calc(.9rem + 1.2vw)"), 1.7rem);
 }
 
 /* Post hero */
@@ -210,7 +212,6 @@ th { text-align: left; background: rgba(30,41,59,.6); color: #fff; }
 .site-footer-owner, .site-footer-credits { color: var(--text-1); }
 
 /* ---------- Reveal fade (replayable, smooth) ---------- */
-/* lighter transform-only animation; no filters */
 .reveal {
   opacity: 0;
   transform: translate3d(0, 22px, 0);             /* GPU-friendly */
@@ -223,9 +224,15 @@ th { text-align: left; background: rgba(30,41,59,.6); color: #fff; }
   transform: translate3d(0, 0, 0);
 }
 
-/* Typography scale */
-.title-xl { font-size: clamp(2.2rem, 4vw + 1rem, 4.2rem); margin: .5rem 0 0; }
-.section-title { font-size: clamp(1.4rem, 1.6vw + .8rem, 2rem); margin: 1.5rem 0 .75rem; }
+/* Typography scale (Ruby Sass-safe clamp) */
+.title-xl {
+  /* clamp(2.2rem, 4vw + 1rem, 4.2rem) => wrap in calc + unquote */
+  font-size: clamp(2.2rem, unquote("calc(1rem + 4vw)"), 4.2rem);
+}
+.section-title {
+  /* clamp(1.4rem, 1.6vw + .8rem, 2rem) => wrap */
+  font-size: clamp(1.4rem, unquote("calc(.8rem + 1.6vw)"), 2rem);
+}
 
 /* ---------- Snap layout & comfy text margins ---------- */
 section, header.hero { margin: 0; }                /* reset for snap layout */
