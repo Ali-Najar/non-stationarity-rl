@@ -28,35 +28,36 @@ title: ""
 <!-- Page-local CSS for the circular loader (safe to keep even if style.scss has similar rules) -->
 <style>
   .poster-click{ position:relative; display:block; text-align:center; }
+
   .poster-loader{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 30%;
-  max-width: min(1100px, 60vw);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    max-width: min(1100px, 60vw);
+    /* height will be set via JS to match the image exactly */
+    height: auto;
 
-  /* approximate height while the image is decoding; disappears once image shows */
-  aspect-ratio: 0.707; /* A-series portrait ratio; tweak if your poster is landscape */
+    display: grid;
+    place-items: center;
+    gap: .65rem;
 
-  display: grid;
-  place-items: center;
-  gap: .65rem;
+    border-radius: 14px;
+    border: 1px solid var(--card-border);
+    background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    box-shadow: var(--shadow);
 
-  border-radius: 14px;
-  border: 1px solid var(--card-border);
-  background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  box-shadow: var(--shadow);
+    transition: opacity .22s ease;
+    z-index: 2;
+  }
+  .poster-loader.is-done{
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+  }
 
-  transition: opacity .22s ease;
-  z-index: 2;
-}
-.poster-loader.is-done{
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
   .spinner{
     width: 34px; height: 34px; border-radius: 50%;
     border: 3px solid rgba(148,163,184,.25);
@@ -64,6 +65,8 @@ title: ""
     animation: spin .8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* keep these as you had them */
   .poster-img{ opacity:0; visibility:hidden; transition: opacity .28s ease-out; }
   .poster-img.is-ready{ opacity:1; visibility:visible; }
 </style>
@@ -149,20 +152,52 @@ document.addEventListener('DOMContentLoaded', function(){
   const wait = document.getElementById('poster-wait');
   if (!img || !wait) return;
 
+  // Match the overlay’s box to the image’s rendered size
+  function syncOverlayBox() {
+    // width from layout (after CSS % / max-width is applied)
+    const w = img.getBoundingClientRect().width || img.clientWidth;
+    if (w > 0) {
+      wait.style.width = w + 'px';
+      // if we know the real aspect, use it; else keep current height
+      if (img.naturalWidth && img.naturalHeight) {
+        const h = w * (img.naturalHeight / img.naturalWidth);
+        wait.style.height = h + 'px';
+      }
+    }
+  }
+
+  // Always show loader initially and size it once
+  wait.classList.remove('is-done');
+  syncOverlayBox();
+
   function reveal() {
-    img.classList.add('is-ready');     // fade image in
-    wait.classList.add('is-done');     // fade loader out
+    // fade image in, fade loader out
+    img.classList.add('is-ready');
+    wait.classList.add('is-done');
     wait.setAttribute('aria-busy','false');
   }
 
+  // If the image is already cached/decoded, still give the loader a frame
   if (img.complete && img.naturalWidth > 0) {
-    reveal();
+    // 2 rAFs guarantees at least one paint before hiding
+    requestAnimationFrame(() => {
+      syncOverlayBox();
+      requestAnimationFrame(reveal);
+    });
   } else {
-    img.addEventListener('load', reveal, { once: true });
+    // On load, sync once more (we now know the exact aspect) then reveal
+    img.addEventListener('load', () => {
+      syncOverlayBox();
+      reveal();
+    }, { once: true });
+
     img.addEventListener('error', function(){
       wait.innerHTML = '<span style="opacity:.85">Could not load image. ' +
                        '<a href="{{ "/assets/img/PosterSession.pdf" | relative_url }}">Download the PDF</a>.</span>';
     }, { once: true });
   }
+
+  // Keep overlay matched on viewport resizes
+  window.addEventListener('resize', syncOverlayBox);
 });
 </script>
