@@ -319,3 +319,20 @@ html, body{ max-width:100%; overflow-x: clip; }
 /* Catch rogue 100vw usage */
 *[style*="100vw"]{ width:100% !important; }
 
+/* Vector viewer box: taller so an A0 poster fits without internal scroll */
+.poster-frame{
+  height: min(85vh, 1100px) !important;  /* was min(60vh, 700px) */
+  background: transparent;               /* no white halo around edges */
+  border: 0;                              /* optional: remove frame border */
+  box-shadow: none;                       /* optional: avoids any “box” vibe */
+}
+
+.poster-object{
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* If you previously tried PDF.js canvas, make sure nothing targets it */
+.poster-canvas{ display: none !important; }
