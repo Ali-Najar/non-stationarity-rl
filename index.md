@@ -44,58 +44,28 @@ title: ""
   </section>
 
   <!-- Screen 3: Poster (rendered to canvas via PDF.js — no viewer chrome) -->
-  <section id="poster" class="snap-section">
-    <div class="container">
-      <h2 class="section-title reveal">Check out our poster</h2>
+  <section id="poster" class="reveal snap-section">
+  <div class="container">
+    <h2 class="section-title">Check out our poster</h2>
 
-      <div class="poster-frame">
-        <canvas id="poster-canvas" class="poster-canvas"></canvas>
-      </div>
-
-      <!-- PDF.js -->
-      <script defer src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-      <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const url = "{{ '/assets/img/PosterSession.pdf' | relative_url }}";
-          const canvas = document.getElementById('poster-canvas');
-          if (!canvas) return;
-          const ctx = canvas.getContext('2d');
-          const frame = document.querySelector('#poster .poster-frame');
-
-          // worker
-          pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-
-          function render() {
-            pdfjsLib.getDocument(url).promise
-              .then(pdf => pdf.getPage(1))
-              .then(page => {
-                const w = frame.clientWidth;
-                const vp1 = page.getViewport({ scale: 1 });
-                const scale = Math.min(w / vp1.width, 2.0); // cap scale
-                const vp = page.getViewport({ scale });
-                canvas.width  = Math.floor(vp.width);
-                canvas.height = Math.floor(vp.height);
-                canvas.style.width  = vp.width + 'px';
-                canvas.style.height = vp.height + 'px';
-                return page.render({ canvasContext: ctx, viewport: vp }).promise;
-              })
-              .catch(console.error);
-          }
-
-          let tid;
-          window.addEventListener('resize', () => { clearTimeout(tid); tid = setTimeout(render, 120); });
-          render();
-        });
-      </script>
-
-      <noscript>
-        <div class="note" style="margin-top:1rem">
-          JavaScript is disabled. <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}">Open the poster PDF</a>.
-        </div>
-      </noscript>
+    <div class="poster-frame">
+      <object
+        class="poster-object"
+        data="{{ '/assets/img/PosterSession.pdf#page=1&zoom=page-fit&view=Fit&toolbar=0&navpanes=0&scrollbar=0' | relative_url }}"
+        type="application/pdf">
+        <!-- Fallbacks if the browser can’t embed PDFs -->
+        <embed class="poster-object"
+               src="{{ '/assets/img/PosterSession.pdf#zoom=page-fit' | relative_url }}"
+               type="application/pdf" />
+        <p class="note" style="margin-top:.75rem">
+          Your browser can’t show the PDF inline.
+          <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}">Open the poster</a>.
+        </p>
+      </object>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- Screen 4: Content -->
   <section id="content" class="snap-section">
