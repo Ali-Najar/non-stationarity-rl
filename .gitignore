@@ -18,3 +18,4 @@ node_modules/
 _config.local.yml
 gemfile
 vendor/
+favicon.svg
