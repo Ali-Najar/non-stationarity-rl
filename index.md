@@ -25,27 +25,6 @@ title: ""
 <!-- Preload the PNG to reduce the initial white flash -->
 <link rel="preload" as="image" href="{{ '/assets/img/PosterSession.png' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
 
-<!-- Page-local CSS for the circular loader (safe to keep even if style.scss has similar rules) -->
-<style>
-  .poster-click{ position:relative; display:block; text-align:center; }
-  .poster-loader{
-    position:absolute; inset:0; display:grid; place-items:center; gap:.6rem;
-    border-radius:14px; z-index:2; pointer-events:none;
-    background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
-    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
-    transition: opacity .2s ease;
-  }
-  .poster-loader.is-done{ opacity:0; visibility:hidden; }
-  .spinner{
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 3px solid rgba(148,163,184,.25);
-    border-top-color: rgba(148,163,184,.9);
-    animation: spin .8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .poster-img{ opacity:0; visibility:hidden; transition: opacity .28s ease-out; }
-  .poster-img.is-ready{ opacity:1; visibility:visible; }
-</style>
 
 <main class="snap" data-start="top">
 
