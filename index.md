@@ -25,6 +25,48 @@ title: ""
 <!-- Preload the PNG to reduce the initial white flash -->
 <link rel="preload" as="image" href="{{ '/assets/img/PosterSession.png' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}">
 
+<!-- Page-local CSS for the circular loader (safe to keep even if style.scss has similar rules) -->
+<style>
+  .poster-click{ position:relative; display:block; text-align:center; }
+  .poster-loader{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30%;
+  max-width: min(1100px, 60vw);
+
+  /* approximate height while the image is decoding; disappears once image shows */
+  aspect-ratio: 0.707; /* A-series portrait ratio; tweak if your poster is landscape */
+
+  display: grid;
+  place-items: center;
+  gap: .65rem;
+
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  box-shadow: var(--shadow);
+
+  transition: opacity .22s ease;
+  z-index: 2;
+}
+.poster-loader.is-done{
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+  .spinner{
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 3px solid rgba(148,163,184,.25);
+    border-top-color: rgba(148,163,184,.9);
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .poster-img{ opacity:0; visibility:hidden; transition: opacity .28s ease-out; }
+  .poster-img.is-ready{ opacity:1; visibility:visible; }
+</style>
 
 <main class="snap" data-start="top">
 
