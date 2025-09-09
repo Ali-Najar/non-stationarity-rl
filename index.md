@@ -47,21 +47,16 @@ title: ""
     </div>
   </section>
 
-  <!-- Screen 3: Poster (PNG preview with circular loader; click downloads PDF) -->
+  <!-- Screen 3: Poster (PNG preview with circular loader; image NOT clickable) -->
   <section id="poster" class="reveal snap-section">
     <div class="container">
       <h2 class="section-title">Check out our poster</h2>
 
-      <!-- Click image to download original PDF -->
-      <a class="poster-click"
-         href="{{ '/assets/img/PosterSession.pdf' | relative_url }}"
-         download
-         style="display:block; text-align:center; position:relative;">
-
-        <!-- Circular loader overlay (hidden after image loads) -->
-        <div class="poster-loader" role="status" aria-live="polite" aria-busy="true">
+      <div class="poster-block" style="text-align:center;">
+        <!-- Circular loader shown until image is ready -->
+        <div id="poster-wait" style="display:flex; align-items:center; justify-content:center; gap:.65rem; margin-bottom:.75rem;">
           <div class="spinner" aria-hidden="true"></div>
-          <div class="loader-text">Preparing preview…</div>
+          <div class="loader-text" role="status" aria-live="polite">Preparing preview…</div>
         </div>
 
         <!-- Keep your size exactly: max-width:60%; height:auto -->
@@ -72,10 +67,17 @@ title: ""
           loading="eager"
           decoding="async"
           src="{{ '/assets/img/PosterSession.png' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"
-          style="max-width:60%; height:auto; border-radius:14px; border:1px solid var(--card-border); background:#fff; box-shadow:var(--shadow);">
+          style="max-width:60%; height:auto; border-radius:14px; border:1px solid var(--card-border); background:#fff; box-shadow:var(--shadow); opacity:0; visibility:hidden;">
 
-        <span class="poster-hint" style="display:block; margin-top:.6rem; opacity:.85;">Click to download PDF</span>
-      </a>
+        <!-- Separate, good-looking download button (image is NOT clickable) -->
+        <div style="margin-top:.9rem;">
+          <a class="btn"
+             href="{{ '/assets/img/PosterSession.pdf' | relative_url }}"
+             download>
+            Download the PDF
+          </a>
+        </div>
+      </div>
     </div>
 
     <noscript>
@@ -105,24 +107,21 @@ title: ""
 <script>
 document.addEventListener('DOMContentLoaded', function(){
   const img = document.getElementById('poster-img');
-  if (!img) return;
-  const anchor = img.closest('.poster-click');
-  const loader = anchor ? anchor.querySelector('.poster-loader') : null;
-  if (!loader) return;
+  const wait = document.getElementById('poster-wait');
+  if (!img || !wait) return;
 
-  function show() {
-    img.classList.add('is-ready');      // CSS fades the image in
-    loader.classList.add('is-done');    // CSS hides the loader
-    anchor.setAttribute('aria-busy','false');
+  function reveal() {
+    img.style.visibility = 'visible';
+    img.classList.add('is-ready');     // CSS fades the image in if present
+    wait.style.display = 'none';       // hide spinner row
   }
 
   if (img.complete && img.naturalWidth > 0) {
-    show();
+    reveal();
   } else {
-    img.addEventListener('load', show, { once: true });
+    img.addEventListener('load', reveal, { once: true });
     img.addEventListener('error', function(){
-      loader.innerHTML = '<span style="opacity:.85">Could not load image. ' +
-                         '<u>Click to download the PDF</u>.</span>';
+      wait.innerHTML = '<span style="opacity:.85">Could not load image. You can still <a href="{{ '/assets/img/PosterSession.pdf' | relative_url }}">download the PDF</a>.</span>';
     }, { once: true });
   }
 });
