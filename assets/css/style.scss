@@ -43,7 +43,7 @@ $shadow: 0 10px 30px rgba(2,6,23,.5);
 
 html {
   scroll-behavior: smooth;
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: thin; /* Firefox (can be overridden/hid below) */
   scrollbar-color: rgba(148,163,184,.35) transparent;
 }
 
@@ -107,42 +107,84 @@ a:hover { color: var(--accent-2) !important; }
   color: var(--text-1);
 }
 
-/* -------------------- Hero (taller + bottom fade) -------------------- */
+/* ---------- Snap layout & comfy spacing ---------- */
+section, header.hero{ margin:0; }
+section, header.hero, main, .container, .prose{ width:100%; }
+
+.container{ max-width: 920px; margin-inline:auto; padding-inline:1rem; }
+
+.snap{ scroll-snap-type:y proximity; } /* gentler on desktop */
+@media (pointer: coarse) and (prefers-reduced-motion: no-preference){
+  .snap{ scroll-snap-type:y mandatory; }
+}
+.snap-section{
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  min-height:100vh;
+  min-height:100svh;
+  display:grid;
+  place-items:center;
+  padding-block:3.5rem;
+}
+
+/* -------------------- Hero (earlier handoff; seamless) -------------------- */
+/* Base hero: transparent (body provides continuous bg), use overlays */
 .hero {
   position: relative;
   overflow: hidden;
   text-align: center;
-  padding: 4rem 1rem 12svh; /* extra bottom pad for handoff */
+  padding: 4rem 1rem 5svh;            /* less bottom pad → creators shows sooner */
+  margin: 2rem 0 0;
+  border-radius: 1rem 1rem 0 0;       /* no bottom radius to avoid seam */
+  background: transparent;            /* body gradient is the base */
+  box-shadow: none;
+  min-height: 112svh !important;      /* slightly taller than 1 screen */
+  transform: translateZ(0);           /* avoid subpixel seams */
+}
+
+/* Glow overlay (no base linear-gradient; keep it on body) */
+.hero::before{
+  content:"";
+  position:absolute; inset:-1px;      /* -1px guards against side/top hairlines */
+  z-index:0; pointer-events:none;
   background:
     radial-gradient(1200px 400px at 50% -10%, rgba(59,130,246,.15), transparent 60%),
-    radial-gradient(800px 300px at 80% 0%, rgba(6,182,212,.12), transparent 60%),
-    linear-gradient(180deg, var(--bg-0), var(--bg-2));
-  color: #fff;
-  border-radius: 1rem;
-  margin: 2rem 0;
-  box-shadow: var(--shadow);
-  min-height: 130svh !important; /* TALLER hero */
+    radial-gradient(800px 300px at 80% 0%, rgba(6,182,212,.12), transparent 60%);
+  transform: translateZ(0);
 }
+
+/* Bottom surface fade overlay (shorter = sooner finish) */
 .hero::after{
   content:"";
-  position:absolute; left:0; right:0; bottom:-1px;
-  height: 18svh;
-  pointer-events:none;
+  position:absolute; left:-1px; right:-1px; bottom:-1px;
+  height: 22svh;                      /* shorter fade → ends sooner */
+  z-index:0; pointer-events:none;
   background: linear-gradient(
     to bottom,
     rgba(10,15,31,0) 0%,
-    rgba(10,15,31,.55) 60%,
+    rgba(10,15,31,.28) 36%,
+    rgba(10,15,31,.60) 72%,
     var(--bg-1) 100%
   );
+  transform: translateZ(0);
 }
 
+/* Neural canvas fades earlier (starts dissolving higher up) */
 .hero-canvas{
   position:absolute; inset:0;
   width:100%; height:100%;
-  z-index:0; pointer-events:none;
-  opacity:.45; filter:none; /* perf-friendly */
+  z-index:1; pointer-events:none;
+  opacity:.45; filter:none;
+  -webkit-mask-image: linear-gradient(to bottom,
+      rgba(0,0,0,1) 38%,               /* was ~55% → now earlier */
+      rgba(0,0,0,0) 100%);
+          mask-image: linear-gradient(to bottom,
+      rgba(0,0,0,1) 38%,
+      rgba(0,0,0,0) 100%);
+  transform: translateZ(0);
 }
-.hero-content{ position:relative; z-index:1; }
+
+.hero-content{ position:relative; z-index:2; }
 
 /* Buttons */
 .btn{
@@ -153,7 +195,27 @@ a:hover { color: var(--accent-2) !important; }
 }
 .btn:hover{ filter:brightness(1.1); box-shadow:0 8px 26px rgba(6,182,212,.35); }
 
-/* Creators */
+/* Creators (closer to hero, subtle top fade overlap) */
+#creators{
+  position: relative;
+  transform: translateZ(0);
+}
+#creators.snap-section{
+  padding-top: .75rem !important;     /* closer to hero */
+}
+#creators::before{
+  content:"";
+  position:absolute; left:0; right:0; top:-6px;  /* tiny overlap kills hairline */
+  height: 12svh;                                  /* shorter fade on next section */
+  pointer-events:none;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-0) 0%,
+    rgba(15,23,42,0) 100%
+  );
+}
+
+/* Avatars and names */
 .creators { display:flex; justify-content:center; gap:1.5rem; margin-top:1.25rem; }
 .avatar{
   width:clamp(96px, 12vw, 148px);
@@ -172,18 +234,12 @@ a:hover { color: var(--accent-2) !important; }
 
 /* Content text margins (“prose”) — narrower column */
 .prose{
-  max-width: 640px !important;      /* MORE side whitespace */
+  max-width: 640px !important;
   margin-inline: auto;
   padding-inline: 1.75rem !important;
 }
 .prose > * + * { margin-top: 1rem; }
 .prose h3 { margin-top: 1.5rem; }
-
-/* Optional: also narrow the “Created by” container a bit */
-#creators .container{
-  max-width: 760px !important;
-  padding-inline: 1.25rem !important;
-}
 
 /* Post hero */
 .post-hero{
@@ -229,30 +285,10 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
 .title-xl      { font-size: clamp(2.2rem, var(--title-fluid),   4.2rem); }
 .section-title { font-size: clamp(1.4rem, var(--section-fluid),  2rem); }
 
-/* ---------- Snap layout & comfy spacing ---------- */
-section, header.hero{ margin:0; }
-section, header.hero, main, .container, .prose{ width:100%; }
-
-.container{ max-width: 920px; margin-inline:auto; padding-inline:1rem; }
-
-.snap{ scroll-snap-type:y proximity; } /* gentler on desktop */
-@media (pointer: coarse) and (prefers-reduced-motion: no-preference){
-  .snap{ scroll-snap-type:y mandatory; }
-}
-.snap-section{
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-  min-height:100vh;
-  min-height:100svh;
-  display:grid;
-  place-items:center;
-  padding-block:3.5rem;
-}
-
-/* Poster frame: a bit smaller */
+/* Poster frame */
 .poster-frame{
   width:100%;
-  height:min(60vh, 700px) !important; /* smaller height */
+  height:min(60vh, 700px) !important;
   border:1px solid var(--card-border);
   border-radius:14px;
   overflow:hidden;
@@ -270,16 +306,12 @@ section, header.hero, main, .container, .prose{ width:100%; }
   .snap{ scroll-snap-type:none; }
 }
 
-/* ---------- Cross-browser scrollbar styling ---------- */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: rgba(148,163,184,.35);
-  border-radius: 12px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,.5); }
+/* ---------- Cross-browser scrollbar styling (hidden) ---------- */
+html, body { scrollbar-width: none !important; }      /* Firefox */
+body { -ms-overflow-style: none; }                    /* Old IE/Edge */
+body::-webkit-scrollbar { width: 0 !important; height: 0 !important; } /* Chrome/Safari/Edge */
+body::-webkit-scrollbar-thumb { background: transparent !important; }
+body::-webkit-scrollbar-track { background: transparent !important; }
 
 /* -------- Extra clamps to kill horizontal overflow -------- */
 html, body{ max-width:100%; overflow-x: clip; }

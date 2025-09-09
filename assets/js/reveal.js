@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (loop) el.classList.remove('revealed');
       });
     });
-  }, { threshold: 0.35, rootMargin: '-12% 0px -12% 0px' });
+  }, { threshold: 0.45, rootMargin: '-12% 0px -12% 0px' });
 
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 });
