@@ -29,41 +29,49 @@ title: ""
 <style>
   .poster-click{ position:relative; display:block; text-align:center; }
 
-  .poster-loader{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30%;
-    max-width: min(1100px, 60vw);
-    /* height will be set via JS to match the image exactly */
-    height: auto;
+  /* Loader overlay — same box as the poster image */
+.poster-loader{
+  position: absolute;
+  top: 0;                         /* align to top of image area */
+  left: 50%;
+  transform: translateX(-50%);
+  /* match your <img style="max-width:60%;"> */
+  max-width: 40%;
+  width: 100%;                    /* width is maxed by max-width above */
+  /* reserve height so it’s visible before the PNG decodes */
+  aspect-ratio: 0.75;            /* A-series portrait (width / height). Use 1.414 for landscape. */
 
-    display: grid;
-    place-items: center;
-    gap: .65rem;
+  display: grid;
+  place-items: center;
+  gap: .65rem;
 
-    border-radius: 14px;
-    border: 1px solid var(--card-border);
-    background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    box-shadow: var(--shadow);
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  background: linear-gradient(180deg, rgba(10,15,31,.65), rgba(10,15,31,.55));
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  box-shadow: var(--shadow);
 
-    transition: opacity .22s ease;
-    z-index: 2;
-  }
-  .poster-loader.is-done{
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-  }
+  transition: opacity .22s ease;
+  z-index: 2;
+}
 
-  .spinner{
-    width: 34px; height: 34px; border-radius: 50%;
-    border: 3px solid rgba(148,163,184,.25);
-    border-top-color: rgba(148,163,184,.9);
-    animation: spin .8s linear infinite;
-  }
+.poster-loader.is-done{
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+
+/* Circular spinner */
+.spinner{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid rgba(148,163,184,.25);
+  border-top-color: rgba(148,163,184,.9);
+  animation: spin .9s linear infinite;
+}
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* keep these as you had them */
@@ -113,7 +121,7 @@ title: ""
           loading="eager"
           decoding="async"
           src="{{ '/assets/img/PosterSession.png' | relative_url }}?v={{ site.github.build_revision | default: site.time | date: '%s' }}"
-          style="max-width:60%; height:auto; border-radius:14px; border:1px solid var(--card-border); background:#fff; box-shadow:var(--shadow);">
+          style="max-width:100%; height:auto; border-radius:14px; border:1px solid var(--card-border); background:#fff; box-shadow:var(--shadow);">
 
         <!-- Nice-looking download button (image is not clickable) -->
         <div style="margin-top:.9rem;">
@@ -148,56 +156,67 @@ title: ""
 <!-- Loader → fade-in handler -->
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const img  = document.getElementById('poster-img');
-  const wait = document.getElementById('poster-wait');
-  if (!img || !wait) return;
+  const img       = document.getElementById('poster-img');
+  const wait      = document.getElementById('poster-wait');
+  const posterSec = document.getElementById('poster');
+  if (!img || !wait || !posterSec) return;
 
-  // Match the overlay’s box to the image’s rendered size
-  function syncOverlayBox() {
-    // width from layout (after CSS % / max-width is applied)
-    const w = img.getBoundingClientRect().width || img.clientWidth;
-    if (w > 0) {
-      wait.style.width = w + 'px';
-      // if we know the real aspect, use it; else keep current height
-      if (img.naturalWidth && img.naturalHeight) {
-        const h = w * (img.naturalHeight / img.naturalWidth);
-        wait.style.height = h + 'px';
-      }
-    }
-  }
-
-  // Always show loader initially and size it once
+  // make sure the loader is visible initially
   wait.classList.remove('is-done');
-  syncOverlayBox();
+  wait.setAttribute('aria-busy','true');
 
-  function reveal() {
-    // fade image in, fade loader out
-    img.classList.add('is-ready');
-    wait.classList.add('is-done');
-    wait.setAttribute('aria-busy','false');
-  }
+  function startSequence(){
+    if (startSequence._started) return;   // run once
+    startSequence._started = true;
 
-  // If the image is already cached/decoded, still give the loader a frame
-  if (img.complete && img.naturalWidth > 0) {
-    // 2 rAFs guarantees at least one paint before hiding
-    requestAnimationFrame(() => {
-      syncOverlayBox();
-      requestAnimationFrame(reveal);
+    const MIN_SPIN_MS = 3000;
+    const timer  = new Promise(res => setTimeout(res, MIN_SPIN_MS));
+    const loaded = (img.complete && img.naturalWidth > 0)
+      ? Promise.resolve()
+      : new Promise((res, rej) => {
+          img.addEventListener('load', res, { once:true });
+          img.addEventListener('error', rej, { once:true });
+        });
+
+    // Reveal after BOTH the timer and the image load
+    Promise.all([timer, loaded]).then(() => {
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.classList.add('is-ready');   // fades in via CSS
+        wait.classList.add('is-done');   // fades out via CSS
+        wait.setAttribute('aria-busy','false');
+      }));
+    }).catch(() => {
+      // If the image fails, show message AFTER the 3s spinner
+      timer.then(() => {
+        wait.setAttribute('aria-busy','false');
+        const spin = wait.querySelector('.spinner'); if (spin) spin.remove();
+        wait.innerHTML =
+          '<div class="loader-text" style="opacity:.9">Could not load image. ' +
+          '<a href="{{ "/assets/img/PosterSession.pdf" | relative_url }}">Download the PDF</a>.</div>';
+      });
     });
-  } else {
-    // On load, sync once more (we now know the exact aspect) then reveal
-    img.addEventListener('load', () => {
-      syncOverlayBox();
-      reveal();
-    }, { once: true });
-
-    img.addEventListener('error', function(){
-      wait.innerHTML = '<span style="opacity:.85">Could not load image. ' +
-                       '<a href="{{ "/assets/img/PosterSession.pdf" | relative_url }}">Download the PDF</a>.</span>';
-    }, { once: true });
   }
 
-  // Keep overlay matched on viewport resizes
-  window.addEventListener('resize', syncOverlayBox);
+  // Start the 3s clock only when the poster section first appears
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          startSequence();
+          io.disconnect(); // only once
+          break;
+        }
+      }
+    }, {
+      root: null,
+      threshold: 0.12,          // ~12% of the section visible
+      rootMargin: '0px 0px -10%'// start just before it fully centers
+    });
+    io.observe(posterSec);
+  } else {
+    // Fallback for very old browsers: start immediately
+    startSequence();
+  }
 });
 </script>
+

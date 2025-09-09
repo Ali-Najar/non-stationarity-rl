@@ -304,7 +304,7 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
 
 .poster-img{
   max-width: min(1100px, 60vw);
-  width: 30%;
+  width: 40%;
   display:block;
   margin:0 auto;
   border-radius: 14px;
@@ -331,7 +331,7 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
   left: 50%;
   transform: translateX(-50%);
   /* match your <img style="max-width:60%;"> */
-  max-width: 60%;
+  max-width: 40%;
   width: 100%;                    /* width is maxed by max-width above */
   /* reserve height so it’s visible before the PNG decodes */
   aspect-ratio: 0.707;            /* A-series portrait (width / height). Use 1.414 for landscape. */
