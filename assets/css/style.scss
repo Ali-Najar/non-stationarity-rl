@@ -504,11 +504,11 @@ html, body{ max-width:100%; overflow-x: clip; }
 
 @media (max-width: 768px){
   .container{ padding-inline: 1.1rem !important; }
-  .prose{ max-width: 36rem !important; padding-inline: 1.1rem !important; }
+  .prose{ max-width: 700px !important; padding-inline: 1.1rem !important; }
 }
 @media (max-width: 480px){
   .container{ padding-inline: .9rem !important; }
-  .prose{ max-width: 32rem !important; padding-inline: .9rem !important; }
+  .prose{ max-width: 450px !important; padding-inline: .9rem !important; }
 }
 
 @media (max-width: 480px){
