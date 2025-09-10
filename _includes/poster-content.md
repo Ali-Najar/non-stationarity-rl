@@ -151,6 +151,7 @@ Instead of assuming the environment will behave according to a single estimated 
 - Finally, it chooses the action that maximizes this worst-case value.
 
 In short:  
+
 $$
 \text{Agent’s choice} = \arg\max_{a \in \mathcal{A}} \;\min_{\substack{(P,r) \text{ consistent with drift}}} \; \text{Return}(a).
 $$
@@ -164,17 +165,21 @@ This robust strategy ensures the agent is never caught off-guard by sudden adver
 <h4 style="margin-top:2em; margin-bottom:1em;">NC-NSMDP definition</h4>
 
 An NC-NSMDP with constants $(L_r, L_p)$ is a sequence of MDPs
+
 $$
 \mathcal{M}_t = (\mathcal{S}, \mathcal{A}, P_t, r_t, H), \quad t \in \mathbb{N},
 $$
+
 such that for all $s \in \mathcal{S}$, $a \in \mathcal{A}$, and $\Delta \ge 1$:
 
 - **Reward regularity:**
+
   $$
   |r_{t+\Delta}(s,a) - r_t(s,a)| \le L_r \Delta,
   $$
 
 - **Transition regularity:**
+
   $$
   W_1\!\left( P_{t+\Delta}(\cdot \mid s,a), P_t(\cdot \mid s,a) \right) \le L_p \Delta,
   $$
@@ -469,9 +474,11 @@ At the start of block $m$:
 1. **Bandit selection.** EXP3.P samples an arm $k_m\in\{1,\dots,K\}$ with probability $p_{k,m}$.
 2. **Deploy base learner.** Run SWUCRL2–CW with $(W_{k_m},\eta_{k_m})$ for the next $H$ steps, producing realized block return $R_m$ (or loss $\ell_m$).
 3. **Feedback to the bandit.** Construct an importance-weighted loss estimate (normalized to $[0,1]$),
+
    $$
    \hat{\ell}_{k,m} \;=\; \frac{\ell_m}{p_{k_m,m}}\,\mathbf{1}\{k=k_m\},
    $$
+
    and update EXP3.P’s weights. This lets the bandit learn which $(W,\eta)$ works best under the current non-stationarity.
 
 Intuition: different drifts favor different windows $W$ (short windows react faster; long windows reduce variance) and different widenings $\eta$ (extra optimism keeps the optimistic model’s effective diameter controlled under drift). BORL **adapts online** by routing data to the currently promising configuration.
@@ -482,9 +489,11 @@ Intuition: different drifts favor different windows $W$ (short windows react fas
 
 **Loss choice.**  
 Any block-level surrogate that orders arms correctly works (and is clipped to $[0,1]$ for EXP3.P): e.g., negative average return, or a proxy for dynamic regret over the block:
+
 $$
 \ell_m \;\approx\; \frac{1}{H}\sum_{t \in \text{block } m}\!\Big(V_{t,1}^{\pi_t^\star}(s_{t,1})-V_{t,1}^{\pi_t}(s_{t,1})\Big),
 $$
+
 estimated from the same statistics SWUCRL2–CW maintains (sliding-window counts, confidence radii).
 
 **Grid design.**  
