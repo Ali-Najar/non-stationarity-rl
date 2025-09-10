@@ -389,3 +389,4 @@ html, body{ max-width:100%; overflow-x: clip; }
 .hero, .container, .prose{ max-width:100%; }
 /* Catch rogue 100vw usage */
 *[style*="100vw"]{ width:100% !important; }
+
