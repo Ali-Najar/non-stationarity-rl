@@ -499,6 +499,9 @@ $$
 
 Choosing a reasonable block length $H$ and a compact grid $\mathcal{K}$ makes the bandit overhead lower order, so BORL achieves the same $\tilde{\mathcal O}(T^{3/4})$ dynamic-regret rate, **without** knowing $(B_r,B_p)$ in advance.
 
+
+---
+
 ## ✦ References ✦ <a name="references"></a>
 
 
