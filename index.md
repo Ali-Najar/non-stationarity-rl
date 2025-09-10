@@ -175,13 +175,9 @@ title: ""
   <!-- Screen 4: Content -->
   <section id="content" class="snap-section">
     <div class="container prose">
-      <h2 class="section-title reveal">Content</h2>
-
-      <h3>Abstract</h3>
-      <p>Real-world RL rarely sits still: transitions and rewards drift as goals change, sensors age, or other agents learn. We study algorithms that adapt without prior knowledge of drift magnitude or change points, targeting low dynamic regret via sliding windows, exponential forgetting, and optimism.</p>
-
-      <h3>Introduction</h3>
-      <p>We model interaction via a horizon-$H$ MDP $\mathcal{M}=(\mathcal{S},\mathcal{A},P,r,H)$. In non-stationary settings, both $P_t(\cdot\mid s,a)$ and $r_t(s,a)$ evolve with time $t$, yielding a sequence $\mathcal{M}_t$.</p>
+      <h2 class="section-title reveal">RL Beyond Stationarity</h2>
+          {% capture poster_md %}{% include poster-content.md %}{% endcapture %}
+          {{ poster_md | markdownify }}
     </div>
   </section>
 
