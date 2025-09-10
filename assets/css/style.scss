@@ -457,3 +457,19 @@ html, body{ max-width:100%; overflow-x: clip; }
   filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,.25));
 }
 
+/* Logos row above the title */
+.logo-strip{
+  --share: .08; /* = 14% of the container width, like 0.14\linewidth */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(.6rem, 2vw, 1.25rem);
+  width: 100%;
+}
+.logo-strip img{
+  flex: 0 0 calc(var(--share) * 100%);   /* equal width for all logos */
+  max-width: calc(var(--share) * 100%);
+  height: auto;                          /* keep aspect ratio */
+  object-fit: contain;                    /* safety for odd SVG/PNGs */
+  display: block;
+}

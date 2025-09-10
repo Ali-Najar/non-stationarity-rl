@@ -87,7 +87,7 @@ title: ""
   <div class="hero-content">
 
     <!-- Logos row (inline, centered) -->
-    <div class="brand-row" aria-label="Affiliations">
+    <div class="logo-strip" aria-label="Affiliations">
       <img class="brand" src="{{ '/assets/img/logo.png'  | relative_url }}">
       <img class="brand" src="{{ '/assets/img/riml-logo.png'  | relative_url }}">
       <img class="brand" src="{{ '/assets/img/drl-logo.png' | relative_url }}" style="display:block; transform:scale(1.18); transform-origin:center;">
