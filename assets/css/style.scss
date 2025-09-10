@@ -364,7 +364,7 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
     max-width: min(1100px, 88vw);  // allow closer to full width
   }
   .poster-loader {
-    width: 80%;                    // was 40%
+    width: 100%;                    // was 40%
     max-width: min(1100px, 88vw);  // allow closer to full width
   }
 }
@@ -375,7 +375,7 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
     max-width: min(1100px, 96vw);
   }
   .poster-loader {
-    width: 94%;
+    width: 100%;
     max-width: min(1100px, 96vw);
   }
 }
