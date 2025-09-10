@@ -511,11 +511,11 @@ html, body{ max-width:100%; overflow-x: clip; }
 
 @media (max-width: 768px){
   .container{ padding-inline: 1.1rem !important; }
-  .prose{ max-width: 650px !important; padding-inline: 1rem !important; font-size: 0.95rem; }
+  .prose{ max-width: min(64ch, 92vw) !important; padding-inline: 1rem !important; font-size: 0.95rem; }
 }
 @media (max-width: 480px){
   .container{ padding-inline: .9rem !important; }
-  .prose{ max-width: 400px !important; padding-inline: .85rem !important; font-size: 0.92rem;}
+  .prose{ max-width: min(58ch, 94vw) !important; padding-inline: .85rem !important; font-size: 0.92rem;}
 }
 
 @media (max-width: 768px){
