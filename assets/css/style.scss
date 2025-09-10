@@ -501,3 +501,39 @@ html, body{ max-width:100%; overflow-x: clip; }
 @media (max-width: 640px){
   .logo-strip{ --share: .22; }           /* ~22% of container each */
 }
+
+@media (max-width: 768px){
+  .container{ padding-inline: 1.1rem !important; }
+  .prose{ max-width: 36rem !important; padding-inline: 1.1rem !important; }
+}
+@media (max-width: 480px){
+  .container{ padding-inline: .9rem !important; }
+  .prose{ max-width: 32rem !important; padding-inline: .9rem !important; }
+}
+
+@media (max-width: 480px){
+  .title-xl{ font-size: clamp(1.8rem, 8vw, 2.6rem); }
+  .section-title{ font-size: clamp(1.15rem, 5.5vw, 1.55rem); }
+  body{ line-height: 1.75; }
+}
+
+@media (max-width: 768px){
+  .hero{ min-height: 92svh !important; padding-bottom: 4svh; }
+}
+/* If snapping feels too “sticky” on phones, uncomment:
+@media (max-width: 640px){
+  .snap{ scroll-snap-type: none; }
+} */
+
+@media (max-width: 640px){
+  .creators{ gap: .9rem; }
+  .avatar{
+    width: clamp(72px, 26vw, 110px);
+    height: clamp(72px, 26vw, 110px);
+  }
+  .creator-name{ font-size: clamp(.95rem, 3.6vw, 1.15rem); }
+  .creator-contact{ font-size: .9rem; }
+}
+@media (max-width: 640px){
+  .btn{ padding: .9rem 1.15rem; border-radius: .8rem; }
+}
