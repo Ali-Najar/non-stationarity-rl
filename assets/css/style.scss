@@ -390,3 +390,70 @@ html, body{ max-width:100%; overflow-x: clip; }
 /* Catch rogue 100vw usage */
 *[style*="100vw"]{ width:100% !important; }
 
+.creator-card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.creator-name{
+  margin-top: .6rem;
+  text-align: center;
+  opacity: .95;
+  font-weight: 800;
+  letter-spacing: .2px;
+  font-size: clamp(1rem, var(--creator-fluid), 1.4rem);
+}
+
+.creator-contact{
+  margin-top: .35rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .95rem;
+  opacity: .9;
+  a{
+    color: var(--accent) !important;
+    text-decoration: none;
+    word-break: break-word;
+  }
+  a:hover{ color: var(--accent-2) !important; text-decoration: underline; }
+}
+
+.icon-mail{
+  width: 1.05em;
+  height: 1.05em;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  fill: none;
+  opacity: .9;
+}
+
+/* Inline logos above the title */
+.brand-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: clamp(10px, 2vw, 22px);
+  flex-wrap: wrap;                       /* wrap on small screens */
+  margin-bottom: clamp(10px, 2vw, 18px); /* breathing room above the title */
+}
+
+.brand{
+  height: clamp(128px, 5.2vw, 64px);      /* responsive height; width auto */
+  width: auto;
+  object-fit: contain;
+  display: block;
+  max-width: 100%;
+  opacity: 1;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,.25));
+  transition: opacity .2s ease;
+}
+.brand:hover{ opacity:1; }
+
+/* If a logo is dark and needs to be light on your dark hero, add class="brand brand--invert" */
+.brand--invert{
+  filter: brightness(0) invert(1) drop-shadow(0 2px 8px rgba(0,0,0,.25));
+}
+

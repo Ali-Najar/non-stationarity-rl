@@ -83,23 +83,57 @@ title: ""
 
   <!-- Screen 1: Title (taller hero, neural bg) -->
   <header class="hero reveal snap-section" data-loop>
-    <canvas id="nn-hero" class="hero-canvas" aria-hidden="true"></canvas>
-    <div class="hero-content">
-      <h1 class="title-xl">Non-Stationarity in RL Environments</h1>
+  <canvas id="nn-hero" class="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-content">
+
+    <!-- Logos row (inline, centered) -->
+    <div class="brand-row" aria-label="Affiliations">
+      <img class="brand" src="{{ '/assets/img/logo.png'  | relative_url }}">
+      <img class="brand" src="{{ '/assets/img/riml-logo.png'  | relative_url }}">
+      <img class="brand" src="{{ '/assets/img/drl-logo.png' | relative_url }}" style="display:block; transform:scale(1.18); transform-origin:center;">
     </div>
-  </header>
+
+    <h1 class="title-xl">Non-Stationarity in RL Environments</h1>
+  </div>
+</header>
+
 
   <!-- Screen 2: Creators -->
   <section id="creators" class="reveal snap-section" data-loop>
-    <div class="container">
-      <h2 class="section-title">Created by</h2>
-      <div class="creators">
-        <div class="avatar" style="background-image:url('{{ '/assets/img/ali.jpg' | relative_url }}')" title="Ali Najar"></div>
-        <div class="avatar" style="background-image:url('{{ '/assets/img/mazdak.jpg' | relative_url }}')" title="Mazdak Teymourian"></div>
+  <div class="container">
+    <h2 class="section-title">Created by</h2>
+
+    <div class="creators">
+      <div class="creator-card">
+        <div class="avatar"
+             style="background-image:url('{{ '/assets/img/ali.jpg' | relative_url }}')"
+             title="Ali Najar" aria-label="Ali Najar"></div>
+        <div class="creator-name">Ali Najar</div>
+        <p class="creator-contact">
+          <svg class="icon-mail" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7.5l9 6 9-6M4.5 6h15a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19.5 18h-15A1.5 1.5 0 0 1 3 16.5v-9A1.5 1.5 0 0 1 4.5 6z"/>
+          </svg>
+          <a href="mailto:anajar13750@gmail.com">anajar13750@gmail.com</a>
+        </p>
       </div>
-      <p class="creator-names">Ali Najar &amp; Mazdak Teymourian</p>
+
+      <div class="creator-card">
+        <div class="avatar"
+             style="background-image:url('{{ '/assets/img/mazdak.jpg' | relative_url }}')"
+             title="Mazdak Teymourian" aria-label="Mazdak Teymourian"></div>
+        <div class="creator-name">Mazdak Teymourian</div>
+        <p class="creator-contact">
+          <svg class="icon-mail" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 7.5l9 6 9-6M4.5 6h15a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 19.5 18h-15A1.5 1.5 0 0 1 3 16.5v-9A1.5 1.5 0 0 1 4.5 6z"/>
+          </svg>
+          <a href="mailto:mazdak.tey@gmail.com">mazdak.tey@gmail.com</a>
+        </p>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
+
+
 
   <!-- Screen 3: Poster (PNG preview with circular loader; image NOT clickable) -->
   <section id="poster" class="reveal snap-section">
