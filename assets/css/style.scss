@@ -544,8 +544,6 @@ html, body{ max-width:100%; overflow-x: clip; }
 mjx-container {
   max-width: 90% !important;  /* only 90% of line */
   overflow-x: auto;
-  overflow-y: hidden;
-  display: block;
 }
 
 mjx-container > svg {
