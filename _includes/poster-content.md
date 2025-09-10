@@ -237,11 +237,13 @@ Thus, planning in NC-NSMDPs reduces to computing **minimax value functions**, wh
 RATS evaluates policies by recursive minimax tree search:
 
 - **Decision nodes (agent’s choice):**
+
   $$
   V(\nu) = \max_{\nu' \in \nu.\mathrm{children}} V(\nu').
   $$
 
 - **Chance nodes (nature’s move):**
+
   $$
   V(\nu) = \min_{(P,R)\in \Delta_{t_0}^t}
     \Big[ R(\nu) + \gamma \sum_{\nu'\in \nu.\mathrm{children}}
@@ -347,11 +349,13 @@ The key idea is to adapt **sliding-window UCRL2 (SW-UCRL2)** with a technique ca
 Instead of pooling *all* past data, the algorithm uses only the last $W$ steps to estimate rewards and transitions:
 
 - Reward estimate:
+
   $$
   \hat r_t(s,a) = \frac{1}{N_t(s,a)} \sum_{\tau=t-W}^{t-1} r_\tau(s,a) \cdot \mathbf{1}\{(s_\tau,a_\tau)=(s,a)\}.
   $$
 
 - Transition estimate:
+
   $$
   \hat p_t(\cdot \mid s,a) = \frac{1}{N_t(s,a)} \sum_{\tau=t-W}^{t-1} \mathbf{1}\{(s_\tau,a_\tau)=(s,a)\}\, \delta_{s_{\tau+1}}.
   $$
@@ -365,11 +369,13 @@ This sliding window allows the agent to forget outdated data and adapt to drift.
 Classical UCRL2 defines confidence sets around $(\hat r_t,\hat p_t)$:
 
 - Rewards:
+
   $$
   \mathcal{H}_{r,t}(s,a) = \{\tilde r : |\tilde r - \hat r_t(s,a)| \le \mathrm{rad}_{r,t}(s,a)\}.
   $$
 
 - Transitions:
+
   $$
   \mathcal{H}_{p,t}(s,a) = \{\tilde p : \|\tilde p - \hat p_t(\cdot\mid s,a)\|_1 \le \mathrm{rad}_{p,t}(s,a)\}.
   $$
