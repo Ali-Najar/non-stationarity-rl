@@ -543,7 +543,10 @@ html, body{ max-width:100%; overflow-x: clip; }
 
 mjx-container {
   max-width: 90% !important;  /* only 90% of line */
+  margin: 0 auto;             /* keep centered */
   overflow-x: auto;
+  overflow-y: hidden;
+  text-align: center;
 }
 
 mjx-container > svg {
