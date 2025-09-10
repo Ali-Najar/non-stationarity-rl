@@ -241,7 +241,7 @@ section, header.hero, main, .container, .prose{ width:100%; }
 
 /* Content text margins (“prose”) — narrower column */
 .prose{
-  max-width: 640px !important;
+  max-width: 960px !important;
   margin-inline: auto;
   padding-inline: 1.75rem !important;
 }
@@ -357,10 +357,29 @@ th{ text-align:left; background:rgba(30,41,59,.6); color:#fff; }
   visibility: hidden;
 }
 
-@media (max-width: 640px){
-  .poster-img{ --max-width: 70%; }      
-  .poster-loader{ --max-width: 70%; }      
+/* Bigger poster on small screens */
+@media (max-width: 768px) {        // tablets & big phones
+  .poster-img {
+    width: 80%;                    // was 40%
+    max-width: min(1100px, 88vw);  // allow closer to full width
+  }
+  .poster-loader {
+    width: 80%;                    // was 40%
+    max-width: min(1100px, 88vw);  // allow closer to full width
+  }
 }
+
+@media (max-width: 480px) {        // small phones
+  .poster-img {
+    width: 94%;
+    max-width: min(1100px, 96vw);
+  }
+  .poster-loader {
+    width: 94%;
+    max-width: min(1100px, 96vw);
+  }
+}
+
 
 /* Circular spinner */
 .spinner{
