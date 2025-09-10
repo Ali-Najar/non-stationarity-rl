@@ -473,3 +473,7 @@ html, body{ max-width:100%; overflow-x: clip; }
   object-fit: contain;                    /* safety for odd SVG/PNGs */
   display: block;
 }
+
+@media (max-width: 640px){
+  .logo-strip{ --share: .22; }           /* ~22% of container each */
+}

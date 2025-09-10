@@ -138,7 +138,7 @@ title: ""
   <!-- Screen 3: Poster (PNG preview with circular loader; image NOT clickable) -->
   <section id="poster" class="reveal snap-section">
     <div class="container">
-      <h2 class="section-title">Check out our poster</h2>
+      <h2 class="section-title">Check out our poster on NSMDPs!</h2>
 
       <div class="poster-block" style="text-align:center; position:relative;">
         <!-- Overlay loader centered over the image area -->
